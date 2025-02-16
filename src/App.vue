@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue';
+import Tapper from './components/Tapper.vue';
 </script>
 
 <template>
   <header>
     <h1>BPM Counter</h1>
   </header>
-  <main></main>
+  <main>
+    <Tapper />
+  </main>
   <footer></footer>
 </template>
 
@@ -25,6 +27,9 @@ header {
 }
 
 main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: calc(100vh - 100px);
 }
 
