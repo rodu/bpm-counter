@@ -3,28 +3,34 @@ import HelloWorld from './components/HelloWorld.vue';
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <header>
+    <h1>BPM Counter</h1>
+  </header>
+  <main></main>
+  <footer></footer>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+header {
+  width: 100%;
+  height: 50px;
+  background-color: #444;
+  display: flex;
+  align-items: center;
+
+  h1 {
+    margin-left: 10px;
+    color: #eee;
+  }
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+main {
+  height: calc(100vh - 100px);
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+footer {
+  width: 100%;
+  height: 50px;
+  background-color: #222;
 }
 </style>
