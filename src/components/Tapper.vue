@@ -4,32 +4,23 @@ import { fromEvent, map, pairwise, scan, tap, timestamp } from 'rxjs';
 
 const bpm = ref(0);
 const hits = ref(0);
-// Select the target element, e.g., the document
-const target = document;
 const resetTimeout = 2000;
 
-// Create an Observable that emits events of a specific type, here 'keydown'
-const keypress$ = fromEvent<KeyboardEvent>(target, 'keyup');
-/* const tapperClick$ = fromEvent<MouseEvent>(
-  document.querySelector('#tapper')!,
-  'click'
-);
- */
-// Subscribe to the observable to handle key press events
-keypress$
+// Create an Observable that emits events of a type 'keyup'
+fromEvent<KeyboardEvent>(document, 'keyup')
   .pipe(
-    tap((event: Event) => pulseOnce(event)),
+    tap((event: Event) => pulsate(event)),
 
-    // Step 1: Add timestamps to each emission
+    // Add timestamps to each emission
     timestamp(),
 
-    // Step 2: Pair up consecutive emissions with their previous ones
+    // Pair up consecutive emissions with their previous ones
     pairwise(),
 
-    // Step 3: Compute the elapsed time between each pair of events
+    // Compute the elapsed time between each pair of events
     map(([prev, curr]) => curr.timestamp - prev.timestamp),
 
-    // Step 4: Calculate the average of all elapsed times
+    // Calculate the average of all elapsed times
     scan(
       (acc, elapsed: number) => {
         if (elapsed >= resetTimeout) {
@@ -64,17 +55,18 @@ keypress$
 
 const shouldPulsate = ref(false);
 const tapperDiv = useTemplateRef('tapper');
-const pulseOnce = (event: Event) => {
+const pulsate = (event: Event) => {
   event.stopPropagation();
 
   if (hits.value > 20) {
-    shouldPulsate.value = true;
-
     // Sets the pulse animation to the same speet of the calculated BPM
     if (tapperDiv.value) {
       tapperDiv.value.style.animationDuration =
         (60 / bpm.value).toFixed(3) + 's';
     }
+
+    // Enable animation after setting new duration
+    shouldPulsate.value = true;
   } else {
     shouldPulsate.value = false;
   }
