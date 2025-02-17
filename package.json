@@ -1,8 +1,10 @@
 {
   "name": "bpm-counter",
+  "description": "An app to find the BPM of a track by tapping keyboard keys",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
