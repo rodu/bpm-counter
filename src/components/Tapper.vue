@@ -57,8 +57,9 @@ const shouldPulsate = ref(false);
 const tapperDiv = useTemplateRef('tapper');
 const pulsate = (event: Event) => {
   event.stopPropagation();
+  const MIN_COUNT_PULSE = 40;
 
-  if (hits.value > 20) {
+  if (hits.value >= MIN_COUNT_PULSE) {
     // Sets the pulse animation to the same speet of the calculated BPM
     if (tapperDiv.value) {
       tapperDiv.value.style.animationDuration =
@@ -89,12 +90,12 @@ const pulsate = (event: Event) => {
   align-items: center;
   width: 200px;
   height: 200px;
-  background-color: #f8a978;
+  background-color: rgb(248, 169, 120);
   color: #222;
   font-size: 1.5rem;
   border-radius: 50%;
   user-select: none;
-  box-shadow: 0px 25px 50px -12px rgba(255, 255, 255, 0.25);
+  box-shadow: 0px 25px 50px -12px rgba(248, 169, 120, 0.25);
 }
 
 .pulse {
@@ -103,15 +104,15 @@ const pulsate = (event: Event) => {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 0 10px rgba(248, 169, 120, 0.7);
   }
 
-  70% {
-    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+  50% {
+    box-shadow: 0 0 0 15px rgba(248, 169, 120, 0);
   }
 
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    box-shadow: 0 0 0 0 rgba(248, 169, 120, 0);
   }
 }
 </style>
