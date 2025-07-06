@@ -42,7 +42,7 @@ fromEvent<KeyboardEvent>(document, 'keyup')
     map(({ time, hits }) => {
       return hits > 0
         ? {
-            bpmValue: Math.round(60e3 / (time / hits)),
+            bpmValue: Number.parseFloat((60e3 / (time / hits)).toFixed(2)),
             hitsValue: hits,
           }
         : { bpmValue: 0, hitsValue: 0 };
