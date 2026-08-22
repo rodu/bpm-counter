@@ -16,8 +16,11 @@ export default defineConfig({
         short_name: 'Count BPMs by tapping',
         description:
           'An app to find the BPM of a track by tapping keyboard keys',
-        theme_color: '#ffffff',
-        /* icons: [
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#242424',
+        theme_color: '#242424',
+        icons: [
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
@@ -28,7 +31,7 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
           },
-        ], */
+        ],
       },
     }),
   ],
