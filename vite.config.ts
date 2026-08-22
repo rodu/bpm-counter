@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/bpm-counter/',
   plugins: [
     vue(),
     VitePWA({
@@ -16,7 +17,7 @@ export default defineConfig({
         short_name: 'Count BPMs by tapping',
         description:
           'An app to find the BPM of a track by tapping keyboard keys',
-        start_url: '/',
+        start_url: '/bpm-counter/',
         display: 'standalone',
         background_color: '#242424',
         theme_color: '#242424',
