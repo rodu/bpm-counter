@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import {
   filter,
   fromEvent,
@@ -13,6 +13,11 @@ import {
 
 const bpm = ref(0);
 const hits = ref(0);
+const formattedBpm = computed(() => {
+  const [whole, decimal] = bpm.value.toFixed(2).split('.');
+
+  return { whole, decimal: `.${decimal}` };
+});
 const showTapBorder = ref(false);
 let tapBorderTimeout: ReturnType<typeof setTimeout> | undefined;
 const resetTimeout = 2000;
@@ -126,7 +131,10 @@ const pulsate = () => {
     :class="{ pulse: shouldPulsate, 'tap-border': showTapBorder }"
   >
     <div class="bpm-label">BPM</div>
-    <div class="bpm-value">{{ bpm.toFixed(2) }}</div>
+    <div class="bpm-value">
+      <span>{{ formattedBpm.whole }}</span
+      ><span class="bpm-decimal">{{ formattedBpm.decimal }}</span>
+    </div>
   </div>
   <div>Hits: {{ hits }}</div>
 </template>
@@ -156,6 +164,11 @@ const pulsate = () => {
 
 .bpm-value {
   font-size: 2rem;
+}
+
+.bpm-decimal {
+  color: #777;
+  font-size: 0.6em;
 }
 
 .tap-border {
