@@ -1,15 +1,37 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue';
-import { filter, fromEvent, map, merge, pairwise, scan, timestamp } from 'rxjs';
+import {
+  filter,
+  fromEvent,
+  map,
+  merge,
+  pairwise,
+  scan,
+  tap,
+  timestamp,
+} from 'rxjs';
 
 const bpm = ref(0);
 const hits = ref(0);
+const showTapBorder = ref(false);
+let tapBorderTimeout: ReturnType<typeof setTimeout> | undefined;
 const resetTimeout = 2000;
 const computeBPM = (elapsed: number, hits: number) => {
   const seconds = elapsed / 1000;
   const avgTime = seconds / hits;
 
   return Math.round((60 / avgTime) * 100) / 100;
+};
+const showTapFeedback = () => {
+  showTapBorder.value = true;
+
+  if (tapBorderTimeout) {
+    clearTimeout(tapBorderTimeout);
+  }
+
+  tapBorderTimeout = setTimeout(() => {
+    showTapBorder.value = false;
+  }, 75);
 };
 
 // Keep keyboard and main-container clicks in the same timing stream.
@@ -24,6 +46,7 @@ merge(
   )
 )
   .pipe(
+    tap(showTapFeedback),
     // Add timestamps to each emission
     timestamp(),
 
@@ -97,7 +120,11 @@ const pulsate = () => {
 </script>
 
 <template>
-  <div ref="tapper" class="bpm-container" :class="{ pulse: shouldPulsate }">
+  <div
+    ref="tapper"
+    class="bpm-container"
+    :class="{ pulse: shouldPulsate, 'tap-border': showTapBorder }"
+  >
     <div>BPM</div>
     <div>{{ bpm.toFixed(2) }}</div>
   </div>
@@ -118,6 +145,12 @@ const pulsate = () => {
   border-radius: 50%;
   user-select: none;
   box-shadow: 0px 25px 50px -12px rgba(248, 169, 120, 0.25);
+  border: solid 4px transparent;
+  transition: border-color 150ms ease;
+}
+
+.tap-border {
+  border-color: #bb6666;
 }
 
 .pulse {
