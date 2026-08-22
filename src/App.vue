@@ -26,14 +26,14 @@ import Tapper from './components/Tapper.vue';
 <style scoped>
 header {
   width: 100%;
-  height: 50px;
-  background-color: #444;
+  height: 60px;
+  background-color: #173b4d;
   display: flex;
   align-items: center;
 
   h1 {
     margin-left: 10px;
-    color: #eee;
+    color: #c3cab0;
 
     small {
       font-size: 0.5em;
@@ -52,7 +52,7 @@ main {
 footer {
   width: 100%;
   height: 50px;
-  background-color: #222;
+  background-color: #0f2938;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -60,7 +60,7 @@ footer {
   box-sizing: border-box;
 
   a {
-    color: #eee;
+    color: #aab8bd;
     font-family: 'Space Grotesk', 'Avenir Next', sans-serif;
     font-size: 0.875rem;
     font-weight: 600;
@@ -68,7 +68,7 @@ footer {
 
   a:hover,
   a:focus-visible {
-    color: #f8a978;
+    color: #c3cab0;
   }
 }
 </style>
