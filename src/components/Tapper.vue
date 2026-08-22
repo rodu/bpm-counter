@@ -5,6 +5,12 @@ import { fromEvent, map, pairwise, scan, tap, timestamp } from 'rxjs';
 const bpm = ref(0);
 const hits = ref(0);
 const resetTimeout = 2000;
+const computeBPM = (elapsed: number, hits: number) => {
+  const seconds = elapsed / 1000;
+  const avgTime = seconds / hits;
+
+  return Math.round((60 / avgTime) * 100) / 100;
+};
 
 // Create an Observable that emits events of a type 'keyup'
 fromEvent<KeyboardEvent>(document, 'keyup')
@@ -42,8 +48,9 @@ fromEvent<KeyboardEvent>(document, 'keyup')
     map(({ time, hits }) => {
       return hits > 0
         ? {
-            bpmValue: Number.parseFloat((60e3 / (time / hits)).toFixed(2)),
-            hitsValue: hits,
+            bpmValue: computeBPM(time, hits),
+            // Adds the first hit swollen by the pairwise at beginning
+            hitsValue: hits + 1,
           }
         : { bpmValue: 0, hitsValue: 0 };
     })
@@ -54,16 +61,16 @@ fromEvent<KeyboardEvent>(document, 'keyup')
   });
 
 const shouldPulsate = ref(false);
-const tapperDiv = useTemplateRef('tapper');
+const tapperDiv = useTemplateRef<HTMLDivElement>('tapper');
 const pulsate = (event: Event) => {
   event.stopPropagation();
-  const MIN_COUNT_PULSE = 40;
+  const MIN_COUNT_PULSE = 30;
 
   if (hits.value >= MIN_COUNT_PULSE) {
-    // Sets the pulse animation to the same speet of the calculated BPM
+    // Sets the pulse animation to the same speed of the calculated BPM
     if (tapperDiv.value) {
       tapperDiv.value.style.animationDuration =
-        (60 / bpm.value).toFixed(3) + 's';
+        (60 / bpm.value).toFixed(2) + 's';
     }
 
     // Enable animation after setting new duration
@@ -77,7 +84,7 @@ const pulsate = (event: Event) => {
 <template>
   <div ref="tapper" class="bpm-container" :class="{ pulse: shouldPulsate }">
     <div>BPM</div>
-    <div>{{ bpm }}</div>
+    <div>{{ bpm.toFixed(2) }}</div>
   </div>
   <div>Hits: {{ hits }}</div>
 </template>
