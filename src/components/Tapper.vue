@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue';
-import { fromEvent, map, pairwise, scan, tap, timestamp } from 'rxjs';
+import { fromEvent, map, pairwise, scan, timestamp } from 'rxjs';
 
 const bpm = ref(0);
 const hits = ref(0);
@@ -15,8 +15,6 @@ const computeBPM = (elapsed: number, hits: number) => {
 // Create an Observable that emits events of a type 'keyup'
 fromEvent<KeyboardEvent>(document, 'keyup')
   .pipe(
-    tap((event: Event) => pulsate(event)),
-
     // Add timestamps to each emission
     timestamp(),
 
@@ -58,12 +56,12 @@ fromEvent<KeyboardEvent>(document, 'keyup')
   .subscribe(({ bpmValue, hitsValue }) => {
     bpm.value = bpmValue;
     hits.value = hitsValue;
+    pulsate();
   });
 
 const shouldPulsate = ref(false);
 const tapperDiv = useTemplateRef<HTMLDivElement>('tapper');
-const pulsate = (event: Event) => {
-  event.stopPropagation();
+const pulsate = () => {
   const MIN_COUNT_PULSE = 30;
 
   if (hits.value >= MIN_COUNT_PULSE) {
@@ -71,6 +69,14 @@ const pulsate = (event: Event) => {
     if (tapperDiv.value) {
       tapperDiv.value.style.animationDuration =
         (60 / bpm.value).toFixed(2) + 's';
+
+      // Restart the one-shot pulse so it starts on the latest tap.
+      if (shouldPulsate.value) {
+        tapperDiv.value.classList.remove('pulse');
+        // Force a layout recalculation before adding the class again.
+        void tapperDiv.value.offsetWidth;
+        tapperDiv.value.classList.add('pulse');
+      }
     }
 
     // Enable animation after setting new duration
@@ -106,16 +112,12 @@ const pulsate = (event: Event) => {
 }
 
 .pulse {
-  animation: 0.25s pulse infinite;
+  animation: 0.25s pulse infinite linear;
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 10px rgba(248, 169, 120, 0.7);
-  }
-
-  50% {
-    box-shadow: 0 0 0 15px rgba(248, 169, 120, 0);
+    box-shadow: 0 0 0 15px rgba(248, 169, 120, 0.7);
   }
 
   100% {
