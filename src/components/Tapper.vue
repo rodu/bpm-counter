@@ -155,6 +155,8 @@ const pulsate = () => {
   box-shadow: 0px 25px 50px -12px rgba(248, 169, 120, 0.25);
   border: solid 4px transparent;
   transition: border-color 150ms ease;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .bpm-label {
