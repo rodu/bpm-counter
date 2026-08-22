@@ -39,11 +39,11 @@ const showTapFeedback = () => {
   }, 75);
 };
 
-// Keep keyboard and main-container clicks in the same timing stream.
+// Keep keyboard and main-container taps in the same timing stream.
 merge(
   fromEvent<KeyboardEvent>(document, 'keyup'),
-  fromEvent<MouseEvent>(document, 'click').pipe(
-    // Document receives every click, so only count clicks inside main.
+  fromEvent<PointerEvent>(document, 'pointerup').pipe(
+    // Document receives every pointer event, so only count events inside main.
     filter(
       (event) =>
         event.target instanceof Element && event.target.closest('main') !== null
