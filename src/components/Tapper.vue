@@ -125,8 +125,8 @@ const pulsate = () => {
     class="bpm-container"
     :class="{ pulse: shouldPulsate, 'tap-border': showTapBorder }"
   >
-    <div>BPM</div>
-    <div>{{ bpm.toFixed(2) }}</div>
+    <div class="bpm-label">BPM</div>
+    <div class="bpm-value">{{ bpm.toFixed(2) }}</div>
   </div>
   <div>Hits: {{ hits }}</div>
 </template>
@@ -147,6 +147,15 @@ const pulsate = () => {
   box-shadow: 0px 25px 50px -12px rgba(248, 169, 120, 0.25);
   border: solid 4px transparent;
   transition: border-color 150ms ease;
+}
+
+.bpm-label {
+  font-family: 'Space Grotesk', 'Avenir Next', sans-serif;
+  font-weight: 700;
+}
+
+.bpm-value {
+  font-size: 2rem;
 }
 
 .tap-border {

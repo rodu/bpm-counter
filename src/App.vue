@@ -4,7 +4,10 @@ import Tapper from './components/Tapper.vue';
 
 <template>
   <header>
-    <h1>BPM Counter</h1>
+    <h1>
+      BPM Counter
+      <small>by Robbiesse</small>
+    </h1>
   </header>
   <main>
     <Tapper />
@@ -23,6 +26,10 @@ header {
   h1 {
     margin-left: 10px;
     color: #eee;
+
+    small {
+      font-size: 0.5em;
+    }
   }
 }
 
