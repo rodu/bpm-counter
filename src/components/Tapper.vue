@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue';
-import { fromEvent, map, pairwise, scan, timestamp } from 'rxjs';
+import { filter, fromEvent, map, merge, pairwise, scan, timestamp } from 'rxjs';
 
 const bpm = ref(0);
 const hits = ref(0);
@@ -12,8 +12,17 @@ const computeBPM = (elapsed: number, hits: number) => {
   return Math.round((60 / avgTime) * 100) / 100;
 };
 
-// Create an Observable that emits events of a type 'keyup'
-fromEvent<KeyboardEvent>(document, 'keyup')
+// Keep keyboard and main-container clicks in the same timing stream.
+merge(
+  fromEvent<KeyboardEvent>(document, 'keyup'),
+  fromEvent<MouseEvent>(document, 'click').pipe(
+    // Document receives every click, so only count clicks inside main.
+    filter(
+      (event) =>
+        event.target instanceof Element && event.target.closest('main') !== null
+    )
+  )
+)
   .pipe(
     // Add timestamps to each emission
     timestamp(),
