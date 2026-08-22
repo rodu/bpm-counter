@@ -12,7 +12,15 @@ import Tapper from './components/Tapper.vue';
   <main>
     <Tapper />
   </main>
-  <footer></footer>
+  <footer>
+    <a
+      href="https://www.mixcloud.com/robbiesse/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Robbiesse on Mixcloud
+    </a>
+  </footer>
 </template>
 
 <style scoped>
@@ -45,5 +53,22 @@ footer {
   width: 100%;
   height: 50px;
   background-color: #222;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 16px;
+  box-sizing: border-box;
+
+  a {
+    color: #eee;
+    font-family: 'Space Grotesk', 'Avenir Next', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: #f8a978;
+  }
 }
 </style>
