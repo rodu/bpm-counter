@@ -13,6 +13,7 @@ import {
 
 const bpm = ref(0);
 const hits = ref(0);
+const resetProgressKey = ref(0);
 const formattedBpm = computed(() => {
   const [whole, decimal] = bpm.value.toFixed(2).split('.');
 
@@ -38,6 +39,9 @@ const showTapFeedback = () => {
     showTapBorder.value = false;
   }, 75);
 };
+const restartResetProgress = () => {
+  resetProgressKey.value += 1;
+};
 
 // Keep keyboard and main-container taps in the same timing stream.
 merge(
@@ -51,7 +55,10 @@ merge(
   )
 )
   .pipe(
-    tap(showTapFeedback),
+    tap(() => {
+      showTapFeedback();
+      restartResetProgress();
+    }),
     // Add timestamps to each emission
     timestamp(),
 
@@ -136,7 +143,16 @@ const pulsate = () => {
       ><span class="bpm-decimal">{{ formattedBpm.decimal }}</span>
     </div>
   </div>
-  <div>Hits: {{ hits }}</div>
+  <div class="hits">
+    <div>Hits: {{ hits }}</div>
+    <div class="reset-progress" aria-hidden="true">
+      <div
+        :key="resetProgressKey"
+        class="reset-progress-value"
+        :class="{ active: resetProgressKey > 0 }"
+      ></div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -177,6 +193,34 @@ const pulsate = () => {
   border-color: #bb6666;
 }
 
+.hits {
+  width: 200px;
+  margin-top: 20px;
+  font-family: 'Space Grotesk', 'Avenir Next', sans-serif;
+  text-align: center;
+}
+
+.reset-progress {
+  width: 100%;
+  height: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.reset-progress-value {
+  width: 100%;
+  height: 100%;
+  background-color: #efaaaa;
+  transform-origin: left;
+  transform: scaleX(0);
+  border-radius: inherit;
+}
+
+.reset-progress-value.active {
+  animation: reset-progress 2s linear forwards;
+}
+
 .pulse {
   animation: 0.25s pulse infinite linear;
 }
@@ -188,6 +232,16 @@ const pulsate = () => {
 
   100% {
     box-shadow: 0 0 0 0 rgba(248, 169, 120, 0);
+  }
+}
+
+@keyframes reset-progress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
   }
 }
 </style>
