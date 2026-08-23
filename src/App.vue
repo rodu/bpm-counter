@@ -74,7 +74,7 @@ import Tapper from './components/Tapper.vue';
 header {
   width: 100%;
   height: 60px;
-  background-color: #173b4d;
+  background-color: #242424;
   display: flex;
   align-items: center;
 
@@ -86,7 +86,7 @@ header {
   }
 
   h1 {
-    margin-left: 12px;
+    margin-left: 6px;
     color: #c3cab0;
 
     small {
