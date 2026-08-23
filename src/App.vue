@@ -109,7 +109,7 @@ footer {
   background-color: #0f2938;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 20px;
   padding: 0 16px;
   box-sizing: border-box;
