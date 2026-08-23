@@ -4,6 +4,7 @@ import Tapper from './components/Tapper.vue';
 
 <template>
   <header>
+    <img src="/pwa-192x192.png" alt="" class="app-logo" />
     <h1>
       BPM Counter
       <small>by Robbiesse</small>
@@ -77,8 +78,15 @@ header {
   display: flex;
   align-items: center;
 
-  h1 {
+  .app-logo {
+    width: 44px;
+    height: 44px;
     margin-left: 10px;
+    border-radius: 10px;
+  }
+
+  h1 {
+    margin-left: 12px;
     color: #c3cab0;
 
     small {
