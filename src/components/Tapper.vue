@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue';
-import {
-  filter,
-  fromEvent,
-  map,
-  merge,
-  pairwise,
-  scan,
-  tap,
-  timestamp,
-} from 'rxjs';
+import { filter, fromEvent, merge, scan, tap, timestamp } from 'rxjs';
 
 const bpm = ref(0);
 const hits = ref(0);
@@ -19,8 +10,10 @@ const formattedBpm = computed(() => {
 
   return { whole, decimal: `.${decimal}` };
 });
+const shouldPulsate = ref(false);
 const showTapBorder = ref(false);
-let tapBorderTimeout: ReturnType<typeof setTimeout> | undefined;
+let tapBorderTimeout = 0;
+let resetTimeoutId = 0;
 const resetTimeout = 2000;
 const computeBPM = (elapsed: number, hits: number) => {
   const seconds = elapsed / 1000;
@@ -41,6 +34,16 @@ const showTapFeedback = () => {
 };
 const restartResetProgress = () => {
   resetProgressKey.value += 1;
+
+  if (resetTimeoutId) {
+    clearTimeout(resetTimeoutId);
+  }
+
+  resetTimeoutId = setTimeout(() => {
+    if (hits.value === 1) {
+      hits.value = 0;
+    }
+  }, resetTimeout);
 };
 
 // Keep keyboard and main-container taps in the same timing stream.
@@ -62,40 +65,35 @@ merge(
     // Add timestamps to each emission
     timestamp(),
 
-    // Pair up consecutive emissions with their previous ones
-    pairwise(),
-
-    // Compute the elapsed time between each pair of events
-    map(([prev, curr]) => curr.timestamp - prev.timestamp),
-
-    // Calculate the average of all elapsed times
+    // Track the first tap as well as the intervals between later taps.
     scan(
-      (acc, elapsed: number) => {
-        if (elapsed >= resetTimeout) {
-          // Resets counters
-          return { time: 0, hits: 0 };
+      (acc, curr) => {
+        if (
+          acc.previousTimestamp === 0 ||
+          curr.timestamp - acc.previousTimestamp >= resetTimeout
+        ) {
+          acc.time = 0;
+          acc.hits = 1;
+          acc.bpmValue = 0;
+        } else {
+          acc.time += curr.timestamp - acc.previousTimestamp;
+          acc.hits += 1;
+          acc.bpmValue = computeBPM(acc.time, acc.hits - 1);
         }
 
-        acc.time += elapsed;
-        acc.hits += 1;
+        acc.previousTimestamp = curr.timestamp;
+        acc.hitsValue = acc.hits;
 
         return acc;
       },
       {
         time: 0,
         hits: 0,
+        previousTimestamp: 0,
+        bpmValue: 0,
+        hitsValue: 0,
       }
-    ),
-
-    map(({ time, hits }) => {
-      return hits > 0
-        ? {
-            bpmValue: computeBPM(time, hits),
-            // Adds the first hit swollen by the pairwise at beginning
-            hitsValue: hits + 1,
-          }
-        : { bpmValue: 0, hitsValue: 0 };
-    })
+    )
   )
   .subscribe(({ bpmValue, hitsValue }) => {
     bpm.value = bpmValue;
@@ -103,7 +101,6 @@ merge(
     pulsate();
   });
 
-const shouldPulsate = ref(false);
 const tapperDiv = useTemplateRef<HTMLDivElement>('tapper');
 const pulsate = () => {
   const MIN_COUNT_PULSE = 30;
@@ -198,6 +195,7 @@ const pulsate = () => {
   margin-top: 20px;
   font-family: 'Space Grotesk', 'Avenir Next', sans-serif;
   text-align: center;
+  user-select: none;
 }
 
 .reset-progress {
